@@ -36,7 +36,10 @@ public class LoginCheckFilter implements Filter {
                 "/employee/logout",
                 "/backend/**",
                 "/front/**",
-                "/common/**"
+                "/common/**",
+                //为什么需要添加下面两行代码（直接放行以下请求，避免重复跳到登录页面）
+                "/user/sendMsg",
+                "/user/login"
         };
 
         //2.判断本次请求是否需要处理
@@ -47,11 +50,22 @@ public class LoginCheckFilter implements Filter {
             filterChain.doFilter(request,response);
             return;
         }
-        //4.判断登录状态，如果已登录，则直接放行
+        //4-1.判断登录状态，如果已登录，则直接放行
         if(request.getSession().getAttribute("employee") != null){
             log.info("用户已登录，用户id为：{}",request.getSession().getAttribute("employee"));
             Long empId = (Long) request.getSession().getAttribute("employee");
             BaseContext.setCurrentId(empId);
+            log.info("LoginCheckFilter，当前线程的id：{}",Thread.currentThread().getId());
+
+            filterChain.doFilter(request,response);
+            return;
+        }
+
+        //4-2.判断移动端登录状态，如果已登录，则直接放行
+        if(request.getSession().getAttribute("user") != null){
+            log.info("移动用户已登录，用户id为：{}",request.getSession().getAttribute("user"));
+            Long userId = (Long) request.getSession().getAttribute("user");
+            BaseContext.setCurrentId(userId);
             log.info("LoginCheckFilter，当前线程的id：{}",Thread.currentThread().getId());
 
             filterChain.doFilter(request,response);
