@@ -38,4 +38,10 @@ public class GlobalExceptionHandler {
 
         return R.error(ex.getMessage());
     }
+
+    /**
+     * 编写关于FileNotFoundException（图片找不到）的异常处理
+     * @author yanyu
+     * @datetime 2023/3/22 1:44
+     */
 }

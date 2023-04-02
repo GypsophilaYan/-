@@ -105,4 +105,14 @@ public class SetmealController {
         dtoPage.setRecords(list);
         return R.success(dtoPage);
     }
+
+    @GetMapping("/list")
+    public R<List<Setmeal>> list(Setmeal setmeal){
+        LambdaQueryWrapper<Setmeal> queryWrapper = new LambdaQueryWrapper();   //为什么要加Setmeal这个泛型
+        queryWrapper.eq(setmeal.getCategoryId() != null,Setmeal::getCategoryId,setmeal.getCategoryId());
+        queryWrapper.eq(setmeal.getStatus() != null,Setmeal::getStatus,setmeal.getStatus());
+        List<Setmeal> list =setmealService.list(queryWrapper);
+
+        return R.success(list);
+    }
 }
